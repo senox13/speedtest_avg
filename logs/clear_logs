@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-> ping.log
-> download.log
-> upload.log
-> average.log
-echo "Logs cleared successfully"
