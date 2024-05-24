@@ -108,6 +108,9 @@ def run_speedtest(verbose=False):
         if verbose:
             print(f"Speedtest completed in {end_time-start_time:.2f}s")
         results = st.results.dict()
+        if results['download']==0 and results['upload']==0:
+            print('Error: Speedtest packets are being blocked')
+            sys.exit(os.EX_UNAVAILABLE)
         return {
             "timestamp": round(time.time()),
             "ping": round(results['ping'], PING_ROUND),
