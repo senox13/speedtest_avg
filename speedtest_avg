@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-#Hope all you imperitave fuckers enjoy the functional approach!
 import os, csv, sys, json, time, argparse, speedtest, subprocess
 
 #Defaults
@@ -142,15 +141,15 @@ def show_averages(tests, num_days, format_str):
     }
     results_used = 0
     for test in tests:
-        if round(time.time())-test['timestamp'] < num_days*DAY_LENGTH:
+        if int(time.time())-test['timestamp'] < num_days*DAY_LENGTH:
             sums['ping'] += test['ping']
             sums['download'] += test['download']
             sums['upload'] += test['upload']
             results_used += 1
     avg = {
-        "ping": round(sums['ping']/len(tests), PING_ROUND),
-        "download": round(sums['download']/len(tests), DOWN_ROUND),
-        "upload": round(sums['upload']/len(tests), UP_ROUND)
+        "ping": round(sums['ping']/results_used, PING_ROUND),
+        "download": round(sums['download']/results_used, DOWN_ROUND),
+        "upload": round(sums['upload']/results_used, UP_ROUND)
     }
     print(format_str.format(num_days, results_used, avg['ping'], avg['download'], avg['upload']))
 
