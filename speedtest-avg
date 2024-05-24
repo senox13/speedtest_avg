@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-import os, sys, random, subprocess
+import os, sys, subprocess
 
-logDir = "logs/" #"/var/log/avgspeed/"
-avgDepth = 5
+logDir = "/var/log/avgspeed/"
+avgDepth = 7
 fakeResults = True
 pingLogPath = os.path.join(logDir, "ping.log")
 upLogPath = os.path.join(logDir, "upload.log")
@@ -13,20 +13,15 @@ if not os.access(logDir, os.W_OK): #If log folder is not writable
     sys.exit("Error: log folder '%s' is not writable" % logDir)
 
 #Order is ping, download, upload
-if fakeResults:
-    numbers = [19.32, 65.37, 5.67]
-else: #Get real results
-    result_bytes = subprocess.check_output(['speedtest-cli', '--secure', '--simple']) #Run test
-    lines = result_bytes.split(b'\n')
-    #TODO: This should probably use a dict
-    numbers = [float(line.split(b' ')[1]) for line in lines[:-1]] #Trim trailing newline and label text and parse values to floats
+result_bytes = subprocess.check_output(['speedtest-cli', '--secure', '--simple']) #Run test
+lines = result_bytes.split(b'\n')
+numbers = [float(line.split(b' ')[1]) for line in lines[:-1]] #Trim trailing newline and label text and parse values to floats
 
-#Logging and averaging results
+#Append result to each log
 pingResult = numbers[0]
 downResult = numbers[1]
 upResult = numbers[2]
 
-#Append result to each log
 with open(pingLogPath, 'a') as pingLog:
     print(pingResult, file=pingLog)
 with open(downLogPath, 'a') as downLog:
