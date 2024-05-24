@@ -44,10 +44,10 @@ for line in reversed(list(open(upLogPath))):
 
 #Average them and write them to the average log
 avg = {}
-avg['ping'] = str(sum(pingHist)/len(pingHist))
-avg['down'] = str(sum(downHist)/len(downHist))
-avg['up'] = str(sum(upHist)/len(upHist))
+avg['ping'] = sum(pingHist)/float(len(pingHist))
+avg['down'] = sum(downHist)/float(len(downHist))
+avg['up'] = sum(upHist)/float(len(upHist))
 
 with open(avgLogPath, 'w') as avgLog:
-    print("Ping: {0}, download: {1}, Upload: {2}".format(avg['ping'], avg['down'], avg['up']), file=avgLog)
+    print("Ping: {0:.2f}, download: {1:.2f}, Upload: {2:.2f}".format(avg['ping'], avg['down'], avg['up']), file=avgLog)
 
