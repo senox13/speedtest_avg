@@ -159,4 +159,3 @@ def show_averages(tests, num_days, format_str):
 
 if __name__ == "__main__":
     main()
-
