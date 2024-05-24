@@ -1,0 +1,59 @@
+#!/usr/bin/env python3
+import os, sys, random, subprocess
+
+logDir = "logs/" #"/var/log/avgspeed/"
+avgDepth = 5
+fakeResults = True
+pingLogPath = os.path.join(logDir, "ping.log")
+upLogPath = os.path.join(logDir, "upload.log")
+downLogPath = os.path.join(logDir, "download.log")
+avgLogPath = os.path.join(logDir, "average.log")
+
+if not os.access(logDir, os.W_OK): #If log folder is not writable
+    sys.exit("Error: log folder '%s' is not writable" % logDir)
+
+#Order is ping, download, upload
+if fakeResults:
+    numbers = [19.32, 65.37, 5.67]
+else: #Get real results
+    result_bytes = subprocess.check_output(['speedtest-cli', '--secure', '--simple']) #Run test
+    lines = result_bytes.split(b'\n')
+    #TODO: This should probably use a dict
+    numbers = [float(line.split(b' ')[1]) for line in lines[:-1]] #Trim trailing newline and label text and parse values to floats
+
+#Logging and averaging results
+pingResult = numbers[0]
+downResult = numbers[1]
+upResult = numbers[2]
+
+#Append result to each log
+with open(pingLogPath, 'a') as pingLog:
+    print(pingResult, file=pingLog)
+with open(downLogPath, 'a') as downLog:
+    print(downResult, file=downLog)
+with open(upLogPath, 'a') as upLog:
+    print(upResult, file=upLog)
+
+#Read in most recent results from each log
+pingHist = []
+downHist = []
+upHist = []
+for line in reversed(list(open(pingLogPath))):
+    for i in range(0, avgDepth):
+        pingHist.append(float(line.rstrip()))
+for line in reversed(list(open(downLogPath))):
+    for i in range(0, avgDepth):
+        downHist.append(float(line.rstrip()))
+for line in reversed(list(open(upLogPath))):
+    for i in range(0, avgDepth):
+        upHist.append(float(line.rstrip()))
+
+#Average them and write them to the average log
+avg = {}
+avg['ping'] = str(sum(pingHist)/len(pingHist))
+avg['down'] = str(sum(downHist)/len(downHist))
+avg['up'] = str(sum(upHist)/len(upHist))
+
+with open(avgLogPath, 'w') as avgLog:
+    print("Ping: {0}, download: {1}, Upload: {2}".format(avg['ping'], avg['down'], avg['up']), file=avgLog)
+
