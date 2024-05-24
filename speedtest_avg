@@ -123,7 +123,7 @@ def write_log(log_data, log_file_name):
     """Encodes the given object as JSON and outputs it to the given log file, overwriting any previous contents"""
     try:
         with open(log_file_name, 'w') as log_file:
-            log_file.write(json.dumps(log_data)+'\n')
+            log_file.write(json.dumps(log_data, indent=4)+'\n')
     except PermissionError:
         print(f"Error: Insufficient permissions to write to file '{log_file_name}'")
         sys.exit(os.EX_CANTCREAT)
