@@ -3,7 +3,6 @@ import os, sys, subprocess
 
 logDir = "/var/log/avgspeed/"
 avgDepth = 7
-fakeResults = True
 pingLogPath = os.path.join(logDir, "ping.log")
 upLogPath = os.path.join(logDir, "upload.log")
 downLogPath = os.path.join(logDir, "download.log")
